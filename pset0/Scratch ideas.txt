@@ -1,0 +1,8 @@
+TEST MUSICAL
+
+-timer?
+-contador de puntos?
+-que el usuario pueda elegir qué sección probar
+
+1. Repetir secuencias cada vez más largas, esperar un poco y decir cuál es cuál.
+2. ? 

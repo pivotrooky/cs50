@@ -1,0 +1,12 @@
+espacio = 95
+puntuación = 46, 33, 63
+
+corregir:
+
+-problema de redondeo
+-si es +16 o -1, poner eso en vez del grade
+//
+
+
+-comentarios
+-style50

@@ -1,0 +1,21 @@
+(1) grab long double.
+(3) 2*each of A (2)
+(4) sum of *DIGITS* of product of A (3).
+(5) add previous step to sum of digits of B.
+
+//hasta acá, check
+
+(6) is the last digit of that operation a zero? Then it's legit. If not, then no.
+(7) check brand
+(8) if it is legit, then the starting digits tell us brand.
+
+(9) CHECK:
+a."American Express uses 15-digit numbers, MasterCard uses 16-digit numbers, and Visa uses 13- and 16-digit numbers. "
+b.(34 or 37 -> American Express, 51-55 -> Mastercard, 4x -> Visa) 
+
+
+(10) print outcome ($brand or invalid)
+
+if input %10000000000000000 / 100000000000000
+
+

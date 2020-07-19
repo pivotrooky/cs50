@@ -1,0 +1,8 @@
+-reprompt
+-loop
+-dots
+-remove the dots
+
+
+1. get input.
+2. 
