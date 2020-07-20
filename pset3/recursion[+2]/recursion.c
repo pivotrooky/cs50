@@ -6,8 +6,8 @@ int col(int n);
 int main(void)
 {
 
-    int n = get_int("Enter int");
-    printf("%d", col(n));
+    int n = get_int("Enter int\n");
+    printf("%d\n", col(n));
 
 }
 

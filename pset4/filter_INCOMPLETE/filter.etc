@@ -1,9 +1,0 @@
-Terminar blur
-
-hacer una función avg
-
-meter un contador que vea cuántas celdas hay alrededor
-
-que dependa de j e i y de cuánto se acercan o no a 0 y a width/height
-
-y en base a eso meterlos en el array o no
