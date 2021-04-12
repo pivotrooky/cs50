@@ -1,27 +1,31 @@
 #include <math.h>
 #include <cs50.h>
 #include <stdio.h>
-#include <stdarg.h> //necessary when dealing with variadic functions -> those in which an undeterminate amount of arguments are passed
 
-void sub(int *pcents, int *pcoins, int val);
+void substract_value_of_coin(int *pointer_cents, int *pointer_coins, int value);
 
-void givec(int *pcents, int *pcoins, int howMany, ...);
+void loop_through_coin_values(int *pointer_cents, int *pointer_coins, int coin_values_size, int coin_values[]);
 
 int main(void)
 
 {
     float input;
-    int cents, coins;
+    int cents, coins, coin_values_size;
 
     do
     {
         input = get_float("How much change are you owed?\n"); //get change
         cents = round(input * 100); //get cents
         coins = 0;
-        int *pcents = &cents; //pointers
-        int *pcoins = &coins;
-        givec(pcents, pcoins, 4, 25, 10, 5, 1);
-        //passes as arguments the pointers and the values of the coins which will then be substracted from the total amount of change
+        coin_values_size = 4;
+
+        int coin_values[4] = {25, 10, 5, 1};
+
+        int *pointer_cents = &cents; //pointers
+        int *pointer_coins = &coins;
+
+        loop_through_coin_values(pointer_cents, pointer_coins, coin_values_size, coin_values);
+        //passes the pointers and the values of the coins as arguments, which will then be substracted from the total amount of change
 
         printf("%d\n", coins);
 
@@ -30,12 +34,12 @@ int main(void)
     while (!(input > 0)); //checks correct change input
 }
 
-void sub(int *pcents, int *pcoins, int val) //substract an individual value of the change left, as many times as doable
+void substract_value_of_coin(int *pointer_cents, int *pointer_coins, int value) //substract an individual value of the change left, as many times as doable
 {
-    while (*pcents >= val)
+    while (*pointer_cents >= value)
     {
-        *pcents = *pcents - val;
-        *pcoins = *pcoins + 1;
+        *pointer_cents = *pointer_cents - value;
+        *pointer_coins = *pointer_coins + 1;
 
     }
 
@@ -43,16 +47,14 @@ void sub(int *pcents, int *pcoins, int val) //substract an individual value of t
 }
 
 
-void givec(int *pcents, int *pcoins, int howMany, ...)
+void loop_through_coin_values(int *pointer_cents, int *pointer_coins, int coin_values_size, int coin_values[])
 {
-    va_list ap; //argument pointer
 
-    va_start(ap, howMany); //iterates through arguments starting from "howMany"
-    for (int i = 0; i < howMany; i++)
+    //iterates through coin values
+    for (int i = 0; i < coin_values_size; i++)
     {
-        sub(pcents, pcoins, va_arg(ap, int)); //passes each value to function sub
+        substract_value_of_coin(pointer_cents, pointer_coins, coin_values[i]); //passes each value to substract function
     }
-    va_end(ap);
 
     return;
 
