@@ -55,8 +55,9 @@ void print_character_loop(int counter, char character)
 
 void print_character_loop_reverse(int counter, char character)
 {
-    //TODO: make a single function which decides which of these two to call,
-    //and figure out how to do it without needing 3 params
+    //tried making a higher-order function which is called with bool 'reverse' parameter
+    //and then decides whether to call print_character_loop_straight or print_character_loop_reverse
+    //but it ended up adding too much complexity and reducing readability
     for (int length = counter; length >= 1; length--)
     {
         printf("%c", character);

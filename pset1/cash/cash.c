@@ -16,7 +16,7 @@ int main(void)
     {
         input = get_float("How much change are you owed?\n"); //get change
         cents = round(input * 100); //get cents
-        coins = 0;
+        coins = 0; //counter
         coin_values_size = 4;
 
         int coin_values[4] = {25, 10, 5, 1};
