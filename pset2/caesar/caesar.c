@@ -15,19 +15,19 @@ int main(int argc, string argv[])
         exit(1); //exit program if wrong number of arguments
     }
 
-    for (int j = 0; j < strlen(argv[1]); j++)
+    for (int i = 0, n = strlen(argv[1]); i < n; i++)
     {
-        if (isdigit(argv[1][j]) == 0)
+        if (isdigit(argv[1][i]) == 0)
         {
             printf("Usage: ./caesar key\n");
             exit(1); //exit program if wrong type of argument
         }
     }
 
-    string k = argv[1];
-    printf("k = %s\n", k); //print key
+    string key = argv[1];
+    printf("k = %s\n", key); //print key
     string plaintext = get_string("plaintext: "); //get input
-    string ciphertext = cipher(atoi(k), plaintext); //store ciphertext
+    string ciphertext = cipher(atoi(key), plaintext); //store ciphertext
     printf("ciphertext: %s\n", ciphertext); //print output
 }
 
@@ -35,19 +35,21 @@ string cipher(int k, string plaintext) //define cipher function
 {
     string ciphertext = plaintext; //starting point
 
-    for (int i = 0; i < strlen(plaintext); i++) //loop for each character
+    for (int i = 0, n = strlen(plaintext); i < n; i++) //loop for each character
     {
-        if (isalpha(plaintext[i]) != 0) //if non-alpha leave unchanged
+        if (isalpha(plaintext[i]) == 0) //if non-alpha leave unchanged
         {
-            if (isupper(plaintext[i]) != 0)
-            {
-                ciphertext[i] = (((plaintext[i] + k) - 65) % 26) + 65;
-            }
-            else
-            {
-                ciphertext[i] = (((plaintext[i] + k) - 97) % 26) + 97;
-            }
+            continue;
+        }
+
+        if (isupper(plaintext[i]) != 0)
+        {
+            ciphertext[i] = (((plaintext[i] + k) - 'A') % 26) + 'A';
+        }
+        else
+        {
+            ciphertext[i] = (((plaintext[i] + k) - 'a') % 26) + 'a';
         }
     }
-    return ciphertext; //return
+    return ciphertext;
 }
