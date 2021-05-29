@@ -74,9 +74,9 @@ string cipher(string k, string plaintext) //define cipher function
                 break;
             }
 
-            else if (plaintext[i] == toupper(alpha[j])) //check if char is found in lowercase alphabet
+            else if (plaintext[i] == toupper(alpha[j])) //check if char is found in uppercase alphabet
             {
-                ciphertext[i]  = toupper(k[j]); //change char to lowercase
+                ciphertext[i]  = toupper(k[j]); //change char to uppercase
                 break;
             }
         }
