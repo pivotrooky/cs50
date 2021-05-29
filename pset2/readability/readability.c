@@ -50,7 +50,7 @@ float calc_letters(string text)
 {
     letters = 0; //initialize variable
 
-    for (int i = 0; i < strlen(text); i++) //loop to check each character individually
+    for (int i = 0, n = strlen(text); i < n; i++) //loop to check each character individually
     {
         if (isalpha(text[i]) != 0) //check if is alphanumeric
         {
@@ -66,7 +66,7 @@ float calc_words(string text)
 {
     words = 1;
 
-    for (int i = 0; i < strlen(text); i++)
+    for (int i = 0, n = strlen(text); i < n; i++)
     {
         if (isblank(text[i]) != 0)
         {
@@ -84,7 +84,7 @@ float calc_sentences(string text)
 {
     sentences = 0;
 
-    for (int i = 0; i < strlen(text); i++)
+    for (int i = 0, n = strlen(text); i < n; i++)
     {
         if (text[i] == '.' || text[i] == '?' || text[i] == '!')
         {
