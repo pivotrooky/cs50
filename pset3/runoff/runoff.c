@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Max voters and candidates
@@ -32,56 +33,22 @@ bool print_winner(void);
 int find_min(void);
 bool is_tie(int min);
 void eliminate(int min);
+int validate_usage(int argc);
+int get_preferences(void);
+void get_candidates(string argv[]);
+int get_voter_count(void);
 
 int main(int argc, string argv[])
 {
-    // Check for invalid usage
-    if (argc < 2)
-    {
-        printf("Usage: runoff [candidate ...]\n");
-        return 1;
-    }
+    validate_usage(argc);
 
-    // Populate array of candidates
     candidate_count = argc - 1;
-    if (candidate_count > MAX_CANDIDATES)
-    {
-        printf("Maximum number of candidates is %i\n", MAX_CANDIDATES);
-        return 2;
-    }
-    for (int i = 0; i < candidate_count; i++)
-    {
-        candidates[i].name = argv[i + 1];
-        candidates[i].votes = 0;
-        candidates[i].eliminated = false;
-    }
 
-    voter_count = get_int("Number of voters: ");
-    if (voter_count > MAX_VOTERS)
-    {
-        printf("Maximum number of voters is %i\n", MAX_VOTERS);
-        return 3;
-    }
+    get_candidates(argv);
 
-    // Keep querying for votes
-    for (int i = 0; i < voter_count; i++)
-    {
+    get_voter_count();
 
-        // Query for each rank
-        for (int j = 0; j < candidate_count; j++)
-        {
-            string name = get_string("Rank %i: ", j + 1);
-
-            // Record vote, unless it's invalid
-            if (!vote(i, j, name))
-            {
-                printf("Invalid vote.\n");
-                return 4;
-            }
-        }
-
-        printf("\n");
-    }
+    get_preferences();
 
     // Keep holding runoffs until winner exists
     while (true)
@@ -95,6 +62,8 @@ int main(int argc, string argv[])
         {
             break;
         }
+
+        //If you get here, it means no one won yet
 
         // Eliminate last-place candidates
         int min = find_min();
@@ -214,4 +183,67 @@ void eliminate(int min) //cambiar la flag a false
         }
     }
     return;
+}
+
+int validate_usage(int argc)
+{
+    // Check for invalid usage
+    if (argc < 2)
+    {
+        printf("Usage: runoff [candidate ...]\n");
+        exit(1);
+    }
+
+    // Populate array of candidates
+    if (argc - 1 > MAX_CANDIDATES)
+    {
+        printf("Maximum number of candidates is %i\n", MAX_CANDIDATES);
+        exit(2);
+    }
+    return 0;
+}
+
+void get_candidates(string argv[])
+{
+    for (int i = 0; i < candidate_count; i++)
+    {
+        candidates[i].name = argv[i + 1];
+        candidates[i].votes = 0;
+        candidates[i].eliminated = false;
+    }
+}
+
+int get_preferences(void)
+{
+    // Keep querying for votes
+    for (int i = 0; i < voter_count; i++)
+    {
+        // Query for each rank
+        for (int j = 0; j < candidate_count; j++)
+        {
+            string name = get_string("Rank %i: ", j + 1);
+
+            // Record vote, unless it's invalid
+            if (!vote(i, j, name))
+            {
+                printf("Invalid vote.\n");
+                exit(4);
+            }
+        }
+
+        printf("\n");
+    }
+    return 0;
+}
+
+int get_voter_count(void)
+{
+    voter_count = get_int("Number of voters: ");
+
+    if (voter_count > MAX_VOTERS)
+    {
+        printf("Maximum number of voters is %i\n", MAX_VOTERS);
+        exit(3);
+    }
+    return 0;
 }
