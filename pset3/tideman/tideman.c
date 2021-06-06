@@ -11,7 +11,7 @@ int preferences[MAX][MAX];
 // locked[i][j] means i is locked in over j
 bool locked[MAX][MAX];
 
-// Each pair has a winner, loser
+// Each pair has a winner and loser
 typedef struct
 {
     int winner;
@@ -33,6 +33,7 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+bool makes_endless_loop(int start, int loser);
 
 int main(int argc, string argv[])
 {
@@ -86,8 +87,6 @@ int main(int argc, string argv[])
         }
 
         record_preferences(ranks);
-
-        printf("\n");
     }
 
     add_pairs();
@@ -104,9 +103,8 @@ bool vote(int rank, string name, int ranks[])
     {
         if (strcmp(name, candidates[i]) == 0)
         {
-        ranks[rank] = i;
-        printf("ranks %d = %d \n", ranks[rank], i);
-        return true;
+            ranks[rank] = i;
+            return true;
         }
     }
     return false;
@@ -115,35 +113,45 @@ bool vote(int rank, string name, int ranks[])
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    for (int i = 0; i < candidate_count; i++)
+    for (int i = 0; i < candidate_count - 1; i++)
     {
         for (int j = i + 1; j < candidate_count; j++)
         {
             preferences[ranks[i]][ranks[j]]++;
         }
     }
+
     return;
 }
 
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    for (int i = 0; i < candidate_count; i++)
+    for (int i = 0; i < candidate_count - 1; i++)
     {
         for (int j = i + 1; j < candidate_count; j++)
         {
+            if (preferences[i][j] == preferences[j][i])
+            {
+                continue;
+            }
+
+            int winner, loser, strength;
+
             if (preferences[i][j] > preferences[j][i])
             {
-                pairs[pair_count].winner = i;
-                pairs[pair_count].loser = j;
-                pair_count++;
+                winner = i;
+                loser = j;
             }
-            else if (preferences[i][j] < preferences[j][i])
+            else
             {
-                pairs[pair_count].winner = j;
-                pairs[pair_count].loser = i;
-                pair_count++;
+                winner = j;
+                loser = i;
             }
+
+            pairs[pair_count].winner = winner;
+            pairs[pair_count].loser = loser;
+            pair_count++;
         }
     }
     return;
@@ -152,9 +160,28 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    //for (int i = 0; i < pair_count; i++)
-    //{
-        //preferences[pairs[i].winner][pairs[i].loser]
+    //TODO: Optimize!
+
+    for (int i = 0; i < pair_count - 1; i++)
+    {
+        for (int j = 0; j < pair_count - i - 1; j++)
+        {
+
+            int strength_current = preferences[pairs[j].winner][pairs[j].loser];
+            int strength_next = preferences[pairs[j + 1].winner][pairs[j + 1].loser];
+
+            //if current pair is weaker than next pair, swap them.
+            if (strength_current < strength_next)
+            {
+
+                pair temp_pair = pairs[j];
+
+                pairs[j] = pairs[j + 1];
+
+                pairs[j + 1] = temp_pair;
+            }
+        }
+    }
 
     return;
 }
@@ -162,14 +189,71 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+
+    for (int i = 0; i < pair_count; i++)
+    {
+        int winner = pairs[i].winner;
+        int loser = pairs[i].loser;
+
+        if (makes_endless_loop(winner, loser))
+        {
+            continue;
+        }
+
+        locked[winner][loser] = true;
+    }
+
     return;
+}
+
+bool makes_endless_loop(int start, int loser)
+{
+    //base case
+    if (start == loser)
+    {
+        return true;
+    }
+
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (!locked[loser][i])
+        {
+            continue;
+        }
+
+        //recursively check if there's a circle
+        if (makes_endless_loop(start, i))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    int flagged = -1;
+
+    for (int loser = 0; loser < candidate_count; loser++)
+    {
+        //If the previous candidate wasn't flagged then they didn't lose against anyone.
+        //So, print them.
+        if (flagged != loser - 1)
+        {
+            printf("%s\n", candidates[loser - 1]);
+            return;
+        }
+
+        for (int winner = 0; winner < candidate_count; winner++)
+        {
+            if (locked[winner][loser])
+            {
+                flagged = loser;
+            }
+        }
+    }
+
     return;
 }
-
