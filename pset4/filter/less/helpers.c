@@ -44,19 +44,14 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
     for (int i = 0; i < height; i++)
     {
+        //We only have to reach the half of each row
         for (int j = 0; j < width / 2; j++)
 
-        {   int tempRed = image[i][j].rgbtRed;
-            int tempGreen = image[i][j].rgbtGreen;
-            int tempBlue = image[i][j].rgbtBlue;
-
-            image[i][j].rgbtRed = image[i][width - j - 1].rgbtRed;
-            image[i][j].rgbtGreen = image[i][width - j - 1].rgbtGreen;
-            image[i][j].rgbtBlue = image[i][width - j - 1].rgbtBlue;
-
-            image[i][width - j - 1].rgbtRed = tempRed;
-            image[i][width - j - 1].rgbtGreen = tempGreen;
-            image[i][width - j - 1].rgbtBlue = tempBlue;
+        {
+            //Any swap implementation would be okay
+            RGBTRIPLE temp = image[i][j];
+            image[i][j] = image[i][width - j - 1];
+            image[i][width - j - 1] = temp;
         }
     }
     return;
@@ -65,6 +60,61 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
+    //Make container for original image
+    RGBTRIPLE old_image[height][width];
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            //Fill original image matrix
+            old_image[i][j] = image[i][j];
+        }
+    }
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            int counter = 0;
+
+            float redTotal = 0;
+            float greenTotal = 0;
+            float blueTotal = 0;
+
+            //For each pixel...
+            //Check to see if each possible surrounding pixel actually exists in matrix
+
+            for (int k = -1; k < 2; k++)
+            {
+                for (int l = -1; l < 2; l++)
+                {
+
+                    if (i + k < 0 || i + k >= height)
+                    {
+                        continue;
+                    }
+
+                    if (j + l < 0 || j + l >= width)
+                    {
+                        continue;
+                    }
+                    //If it doesn't, then, do nothing.
+                    //If it does, add their color to the corresponding variable, and increment counter;
+
+                    redTotal += old_image[i + k][j + l].rgbtRed;
+                    greenTotal += old_image[i + k][j + l].rgbtGreen;
+                    blueTotal += old_image[i + k][j + l].rgbtBlue;
+                    counter++;
+                }
+            }
+
+            //Counter will tell us how many elements actually are included in the total of each color, so we can get the average properly.
+            image[i][j].rgbtRed = round(redTotal / counter);
+            image[i][j].rgbtGreen = round(greenTotal / counter);
+            image[i][j].rgbtBlue = round(blueTotal / counter);
+        }
+    }
     return;
 }
 
